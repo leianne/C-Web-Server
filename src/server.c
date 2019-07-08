@@ -52,12 +52,20 @@ int send_response(int fd, char *header, char *content_type, void *body, int cont
 {
     const int max_response_size = 262144;
     char response[max_response_size];
-
+    int response_length; 
     // Build HTTP response and store it in response
+    // send_response(fd, "HTTP/1.1 404 NOT FOUND", mime_type, filedata->data, filedata->size);
 
     ///////////////////
     // IMPLEMENT ME! //
     ///////////////////
+    response_length = sprintf(response, 
+        "%s/n"
+        "Content-Type: %s\n"
+        "Connection: close\n"
+        "\n"
+        "%s"
+    , header, content_type, body);
 
     // Send it all!
     int rv = send(fd, response, response_length, 0);
@@ -215,7 +223,7 @@ int main(void)
         // listenfd is still listening for new connections.
 
         handle_http_request(newfd, cache);
-
+        resp_404(newfd);
         close(newfd);
     }
 
