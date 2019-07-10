@@ -134,7 +134,25 @@ void get_file(int fd, struct cache *cache, char *request_path)
     ///////////////////
     // IMPLEMENT ME! //
     ///////////////////
+    char filepath[4096];
+    struct file_data *filedata;
+    char *mime_type;
+
+    (void)cache;
+
+    snprintf(filepath, sizeof filepath, "%s%s", SERVER_ROOT, request_path);
+
+    filedata = file_load(filepath);
+
+    if(filedata) {
+        mime_type = mime_type_get(filepath);
+        send_response(fd, "HTTP/1.1 200 OK", mime_type, filedata->data, filedata->size);
+        file_free(filedata);
+    } else {
+        resp_404(fd);
+    }
 }
+
 
 /**
  * Search for the end of the HTTP header
@@ -182,13 +200,15 @@ void handle_http_request(int fd, struct cache *cache)
         if(strcmp(path, "/d20") ==  0) {
             get_d20(fd);
         }  
-        // else {
-        //     resp_404(fd);
-        // }
+        else {
+
+            printf("____________ %s\n", path);
+            get_file(fd, NULL, path);
+        }
     } 
-    // else {
-    //     resp_404(fd);
-    // }
+    else {
+        resp_404(fd);
+    }
     // (Stretch) If POST, handle the post request
 }
 
