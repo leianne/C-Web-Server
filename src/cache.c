@@ -125,7 +125,12 @@ void cache_put(struct cache *cache, char *path, char *content_type, void *conten
     ///////////////////
     // IMPLEMENT ME! //
     ///////////////////
+    if(cache.head == NULL && cache.tail == NULL) {
+        
+    }
+
 }
+
 
 /**
  * Retrieve an entry from the cache
